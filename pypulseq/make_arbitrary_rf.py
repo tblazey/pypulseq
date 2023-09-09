@@ -27,6 +27,7 @@ def make_arbitrary_rf(
     system: Opts = Opts(),
     time_bw_product: float = 0,
     use: str = str(),
+    norm: bool = True
 ) -> Union[SimpleNamespace, Tuple[SimpleNamespace, SimpleNamespace]]:
     """
     Create an RF pulse with the given pulse shape.
@@ -62,6 +63,8 @@ def make_arbitrary_rf(
         Time-bandwidth product.
     use : str, default=str()
         Use of arbitrary radio-frequency pulse event. Must be one of 'excitation', 'refocusing' or 'inversion'.
+    norm : bool, default=True
+        Normalize waveform so that the magnitude of its integral is equal to flip / 2pi  
 
     Returns
     -------
@@ -89,7 +92,8 @@ def make_arbitrary_rf(
     signal = np.squeeze(signal)
     if signal.ndim > 1:
         raise ValueError(f"signal should have ndim=1. Passed ndim={signal.ndim}")
-    signal = signal / np.abs(np.sum(signal * dwell)) * flip_angle / (2 * np.pi)
+    if norm is True:
+       signal = signal / np.abs(np.sum(signal * dwell)) * flip_angle / (2 * np.pi)
 
     N = len(signal)
     duration = N * dwell
