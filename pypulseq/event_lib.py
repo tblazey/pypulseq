@@ -106,7 +106,10 @@ class EventLibrary:
         """
         if not isinstance(new_data, np.ndarray):
             new_data = np.array(new_data)
-        data_string = new_data.tobytes()
+        data_string = np.array2string(new_data, threshold=np.inf,
+                                      formatter={"float_kind": lambda x: "%.6g" % x})
+        data_string = data_string.replace("[", "")
+        data_string = data_string.replace("]", "")
 
         if data_string in self.keymap:
             key_id = self.keymap[data_string]
